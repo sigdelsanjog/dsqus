@@ -1,22 +1,24 @@
 [build-system]
-requires = ["setuptools>=68", "wheel"]
+requires = ["setuptools>=69", "wheel", "build"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "dsqus"
+name = "dsqusss"
 version = "0.0.1"
-description = "Minimal hello world package"
+description = "dsqusss Python package"
 readme = "README.md"
-requires-python = ">=3.8"
-license = { text = "MIT" }
-authors = [{ name = "Sanjog Sigdel" }]
+requires-python = ">=3.10"
+authors = [
+  { name = "Sanjog Sigdel" }
+]
 dependencies = []
 
-[project.scripts]
-dsqus = "dsqus:main"
+[project.urls]
+Homepage = "https://github.com/sigdelsanjog/dsqus"
+Repository = "https://github.com/sigdelsanjog/dsqus"
 
 [tool.setuptools]
-package-dir = { "" = "src" }
+package-dir = {"" = "src"}
 
 [tool.setuptools.packages.find]
 where = ["src"]
