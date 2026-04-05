@@ -26,32 +26,43 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install build twine
 
-      - name: Set unique dev version for this push
+        - name: Set semantic version for this push
         env:
           RUN_NUMBER: ${{ github.run_number }}
         run: |
           python - <<'PY'
           from pathlib import Path
+          import os
           import re
 
           pyproject = Path("pyproject.toml")
           content = pyproject.read_text(encoding="utf-8")
 
-          match = re.search(r'^version\s*=\s*"([^"]+)"', content, flags=re.MULTILINE)
-          if not match:
+          if not re.search(r'^version\s*=\s*"([^"]+)"', content, flags=re.MULTILINE):
               raise SystemExit("Could not find [project].version in pyproject.toml")
 
-          base_version = match.group(1).split(".", 1)[0]
-          dev_version = f"{base_version}.dev{__import__('os').environ['RUN_NUMBER']}"
+          run_number = int(os.environ["RUN_NUMBER"])
+          if run_number < 1:
+            raise SystemExit("RUN_NUMBER must be >= 1")
+
+          # Base-100 carry strategy:
+          # 1..99      -> 0.0.1 .. 0.0.99
+          # 100..199   -> 0.1.0 .. 0.1.99
+          # 10000      -> 1.0.0
+          major = run_number // 10000
+          minor = (run_number // 100) % 100
+          patch = run_number % 100
+          version = f"{major}.{minor}.{patch}"
+
           updated = re.sub(
               r'^version\s*=\s*"[^"]+"',
-              f'version = "{dev_version}"',
+            f'version = "{version}"',
               content,
               count=1,
               flags=re.MULTILINE,
           )
           pyproject.write_text(updated, encoding="utf-8")
-          print(f"Package version set to: {dev_version}")
+          print(f"Package version set to: {version}")
           PY
 
       - name: Build package
