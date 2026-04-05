@@ -3,7 +3,7 @@ requires = ["setuptools>=69", "wheel", "build"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "dsqusss"
+name = "dsqus"
 version = "0.0.1"
 description = "dsqusss Python package"
 readme = "README.md"

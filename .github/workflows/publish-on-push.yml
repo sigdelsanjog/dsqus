@@ -41,7 +41,7 @@ jobs:
           if not match:
               raise SystemExit("Could not find [project].version in pyproject.toml")
 
-          base_version = match.group(1).split(".dev", 1)[0]
+          base_version = match.group(1).split(".", 1)[0]
           dev_version = f"{base_version}.dev{__import__('os').environ['RUN_NUMBER']}"
           updated = re.sub(
               r'^version\s*=\s*"[^"]+"',
