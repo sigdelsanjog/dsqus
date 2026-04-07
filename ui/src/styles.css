@@ -208,6 +208,202 @@ h1 {
   animation: rise 650ms ease-out both;
 }
 
+.issuePanel,
+.editorCard,
+.scoreCard {
+  grid-column: span 12;
+  padding: 1.2rem;
+}
+
+.filterGrid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.8rem;
+}
+
+.filterCard {
+  border: 1px solid rgba(19, 51, 59, 0.12);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.72);
+  padding: 0.95rem;
+  text-align: left;
+  color: var(--ink);
+  cursor: pointer;
+  display: grid;
+  gap: 0.3rem;
+}
+
+.filterCard strong {
+  font-size: 0.92rem;
+}
+
+.filterCard span {
+  color: var(--muted);
+  font-size: 0.84rem;
+}
+
+.filterCard.active {
+  border-color: var(--teal-dark);
+  box-shadow: inset 0 0 0 1px var(--teal-dark);
+  background: rgba(14, 142, 143, 0.08);
+}
+
+.columnChips {
+  display: flex;
+  gap: 0.55rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.8rem;
+}
+
+.chip {
+  border: 1px solid rgba(19, 51, 59, 0.14);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.85);
+  color: #3f5860;
+  padding: 0.46rem 0.72rem;
+  font-size: 0.82rem;
+  cursor: pointer;
+}
+
+.editorGrid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.8rem;
+}
+
+.editorGrid label {
+  display: grid;
+  gap: 0.36rem;
+}
+
+.editorGrid span {
+  font-size: 0.8rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+}
+
+.editorGrid input {
+  border: 1px solid rgba(19, 51, 59, 0.18);
+  border-radius: 10px;
+  padding: 0.62rem 0.66rem;
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.emptyEditor {
+  border: 1px dashed rgba(19, 51, 59, 0.18);
+  border-radius: 12px;
+  padding: 0.9rem;
+  color: var(--muted);
+}
+
+.rowActions {
+  display: inline-flex;
+  gap: 0.4rem;
+}
+
+.rowActions button {
+  border: 1px solid rgba(19, 51, 59, 0.18);
+  border-radius: 8px;
+  background: white;
+  color: #2f4f58;
+  padding: 0.32rem 0.54rem;
+  cursor: pointer;
+}
+
+.activeRow {
+  outline: 1px solid rgba(14, 142, 143, 0.4);
+}
+
+.scoreHead {
+  display: grid;
+  gap: 0.7rem;
+  margin-bottom: 0.75rem;
+}
+
+.scanStatus {
+  margin: 0;
+  color: var(--muted);
+}
+
+.formula {
+  border-radius: 12px;
+  border: 1px solid rgba(19, 51, 59, 0.12);
+  background: rgba(255, 255, 255, 0.64);
+  padding: 0.75rem;
+  font-size: 0.86rem;
+  line-height: 1.45;
+  color: #3a5961;
+}
+
+.overallScore {
+  margin-top: 0.8rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 14px;
+  border: 1px solid rgba(19, 51, 59, 0.14);
+  background: rgba(14, 142, 143, 0.08);
+  padding: 0.8rem;
+}
+
+.overallScore span {
+  color: #356069;
+  font-weight: 700;
+}
+
+.overallScore strong {
+  font-size: 1.3rem;
+}
+
+.scoreGrid {
+  margin-top: 0.8rem;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.72rem;
+}
+
+.scoreMetric {
+  border: 1px solid rgba(19, 51, 59, 0.1);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.74);
+  padding: 0.66rem;
+}
+
+.scoreMetric header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+
+.scoreMetric h4,
+.scoreMetric p {
+  margin: 0;
+}
+
+.scoreMetric h4 {
+  text-transform: capitalize;
+  font-size: 0.9rem;
+}
+
+.scoreMetric p {
+  font-weight: 800;
+}
+
+.barTrack {
+  margin-top: 0.45rem;
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(19, 51, 59, 0.12);
+  overflow: hidden;
+}
+
+.barValue {
+  height: 100%;
+  background: linear-gradient(90deg, var(--teal-dark), var(--lime));
+}
+
 .tableMeta {
   display: flex;
   justify-content: space-between;
@@ -302,6 +498,12 @@ tbody tr:nth-child(even) {
   }
 
   .metrics {
+    grid-template-columns: 1fr;
+  }
+
+  .filterGrid,
+  .editorGrid,
+  .scoreGrid {
     grid-template-columns: 1fr;
   }
 
