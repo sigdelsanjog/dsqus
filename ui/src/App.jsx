@@ -1,4 +1,10 @@
 import { useMemo, useState } from 'react'
+import DataPreviewTable from './components/DataPreviewTable'
+import FinalScanSection from './components/FinalScanSection'
+import HeroSection from './components/HeroSection'
+import IssueThumbnails from './components/IssueThumbnails'
+import MetricsSection from './components/MetricsSection'
+import RecordEditor from './components/RecordEditor'
 
 const API_BASE_URL = 'http://localhost:8000'
 
@@ -29,16 +35,8 @@ const SCORE_ORDER = [
   'length_distribution',
 ]
 
-function formatPercent(value) {
-  return `${Math.max(0, Math.min(100, value)).toFixed(1)}%`
-}
-
 function clampScore(value) {
   return Math.max(0, Math.min(100, value))
-}
-
-function humanize(metric) {
-  return metric.replace(/_/g, ' ')
 }
 
 export default function App() {
@@ -248,183 +246,31 @@ export default function App() {
     <main className="workspace">
       <div className="ambient" aria-hidden="true" />
 
-      <section className="hero card">
-        <p className="eyebrow">Dataset Quality Studio</p>
-        <h1>Upload your data:
-          
-        </h1>
-        <div className="heroActions">
-          <label className="uploadButton">
-            <input accept=".csv,.xls,.xlsx" type="file" onChange={handleUpload} />
-            {isLoading ? 'Analyzing...' : 'Upload Dataset'}
-          </label>
-          <p className="qualityBadge" data-band={qualityBand}>
-            {qualityBand}
-          </p>
-        </div>
+      <HeroSection
+        handleUpload={handleUpload}
+        isLoading={isLoading}
+        qualityBand={qualityBand}
+        status={status}
+        fileName={fileName}
+      />
 
-        <div className="statusBar">
-          <span>{status}</span>
-          {fileName ? <span>{fileName}</span> : null}
-        </div>
-      </section>
+      <MetricsSection rowCount={rowCount} stats={stats} />
 
-      <section className="metrics">
-        <article className="metricCard card lift">
-          <h3>Rows</h3>
-          <p>{rowCount.toLocaleString()}</p>
-          <small>Records loaded from uploaded file</small>
-        </article>
-        <article className="metricCard card lift">
-          <h3>Completeness</h3>
-          <p>{formatPercent(stats.completeness)}</p>
-          <small>{stats.missingCells.toLocaleString()} missing values</small>
-        </article>
-        <article className="metricCard card lift">
-          <h3>Duplicate Rows</h3>
-          <p>{stats.duplicateRows.toLocaleString()}</p>
-          <small>Potential duplicate patient events</small>
-        </article>
-        <article className="metricCard card lift">
-          <h3>Sensitive Columns</h3>
-          <p>{stats.sensitiveColumns.length}</p>
-          <small>{stats.sensitiveColumns.slice(0, 2).join(', ') || 'No obvious PHI hints detected'}</small>
-        </article>
-      </section>
+      <IssueThumbnails issueBuckets={issueBuckets} selectedFilter={selectedFilter} setSelectedFilter={setSelectedFilter} />
 
-      <section className="issuePanel card">
-        <div className="tableMeta">
-          <h2>Issue Thumbnails</h2>
-          <span>Click to filter records</span>
-        </div>
-        <div className="filterGrid">
-          {[
-            ['all', 'All Records', issueBuckets.all.length],
-            ['missing', 'Completeness Gaps', issueBuckets.missing.length],
-            ['duplicate', 'Duplicates', issueBuckets.duplicate.length],
-            ['sensitive', 'PHI Attention', issueBuckets.sensitive.length],
-          ].map(([key, label, count]) => (
-            <button
-              key={key}
-              type="button"
-              className={`filterCard ${selectedFilter === key ? 'active' : ''}`}
-              onClick={() => setSelectedFilter(key)}
-            >
-              <strong>{label}</strong>
-              <span>{count} records</span>
-            </button>
-          ))}
-        </div>
-      </section>
+      <RecordEditor columns={columns} activeRow={activeRow} updateCell={updateCell} deleteColumn={deleteColumn} />
 
-      <section className="editorCard card">
-        <div className="tableMeta">
-          <h2>Record Editing Workspace</h2>
-          <span>Select a row to edit values, or delete row/columns</span>
-        </div>
-        <div className="columnChips">
-          {columns.map((column) => (
-            <button key={column} type="button" className="chip" onClick={() => deleteColumn(column)}>
-              Remove column: {column}
-            </button>
-          ))}
-        </div>
-        {activeRow ? (
-          <div className="editorGrid">
-            {columns.map((column) => (
-              <label key={column}>
-                <span>{column}</span>
-                <input value={String(activeRow[column] ?? '')} onChange={(event) => updateCell(column, event.target.value)} />
-              </label>
-            ))}
-          </div>
-        ) : (
-          <div className="emptyEditor">Pick a record from the table below to edit. Changes are local UI prototype actions for now.</div>
-        )}
-      </section>
+      <DataPreviewTable
+        columns={columns}
+        displayedRows={displayedRows}
+        rows={rows}
+        emptyState={emptyState}
+        activeRowId={activeRowId}
+        setActiveRowId={setActiveRowId}
+        deleteRow={deleteRow}
+      />
 
-      <section className="tableCard card">
-        <div className="tableMeta">
-          <h2>Data Preview Grid</h2>
-          <span>
-            {displayedRows.length} of {rows.length} records
-          </span>
-        </div>
-
-        {emptyState ? (
-          <div className="emptyState">Upload a dataset to start profiling data quality.</div>
-        ) : (
-          <div className="tableWrap">
-            <table>
-              <thead>
-                <tr>
-                  {columns.map((column) => (
-                    <th key={column}>{column}</th>
-                  ))}
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {displayedRows.map((row) => (
-                  <tr key={row.__rowId} className={row.__rowId === activeRowId ? 'activeRow' : ''}>
-                    {columns.map((column) => (
-                      <td key={column}>{row[column] ?? ''}</td>
-                    ))}
-                    <td>
-                      <div className="rowActions">
-                        <button type="button" onClick={() => setActiveRowId(row.__rowId)}>
-                          Edit
-                        </button>
-                        <button type="button" onClick={() => deleteRow(row.__rowId)}>
-                          Delete
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
-      </section>
-
-      <section className="scoreCard card">
-        <div className="tableMeta">
-          <h2>Final Quality Scan Phase</h2>
-          <span>Weighted enterprise scoring model</span>
-        </div>
-        <div className="scoreHead">
-          <button type="button" className="uploadButton" onClick={runFinalScan} disabled={!rows.length}>
-            Run Dataset Quality Scoring Engine
-          </button>
-          <p className="scanStatus">{scanMessage}</p>
-        </div>
-        <div className="formula">
-          overall_score = 0.15*redundancy + 0.10*toxicity + 0.10*diversity + 0.10*readability + 0.10*coherence +
-          0.10*novelty + 0.10*structure + 0.10*factual_conflict + 0.075*domain_balance + 0.075*length_distribution
-        </div>
-        {scanResult ? (
-          <>
-            <div className="overallScore">
-              <span>Overall Score</span>
-              <strong>{scanResult.overallScore.toFixed(2)} / 100</strong>
-            </div>
-            <div className="scoreGrid">
-              {SCORE_ORDER.map((metric) => (
-                <article key={metric} className="scoreMetric">
-                  <header>
-                    <h4>{humanize(metric)}</h4>
-                    <p>{scanResult.metricScores[metric].toFixed(2)}</p>
-                  </header>
-                  <div className="barTrack">
-                    <div className="barValue" style={{ width: `${scanResult.metricScores[metric]}%` }} />
-                  </div>
-                </article>
-              ))}
-            </div>
-          </>
-        ) : null}
-      </section>
+      <FinalScanSection runFinalScan={runFinalScan} rows={rows} scanMessage={scanMessage} scanResult={scanResult} scoreOrder={SCORE_ORDER} />
     </main>
   )
 }
