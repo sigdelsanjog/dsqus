@@ -1,5 +1,5 @@
-"""Engine package for the dsqus backend service."""
+"""Core engine package for dsqus."""
 
-from .app import app
+from .file_parser import parse_uploaded_file
 
-__all__ = ["app"]
+__all__ = ["parse_uploaded_file"]

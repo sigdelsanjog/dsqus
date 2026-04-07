@@ -12,9 +12,6 @@ authors = [
   { name = "Sanjog Sigdel" }
 ]
 dependencies = [
-  "fastapi>=0.115",
-  "uvicorn[standard]>=0.30",
-  "python-multipart>=0.0.9",
   "pandas>=2.2",
   "openpyxl>=3.1",
 ]
@@ -23,8 +20,5 @@ dependencies = [
 Homepage = "https://github.com/sigdelsanjog/dsqus"
 Repository = "https://github.com/sigdelsanjog/dsqus"
 
-[tool.setuptools]
-package-dir = {"" = "dsqus"}
-
 [tool.setuptools.packages.find]
-where = ["dsqus"]
+include = ["dsqus*"]

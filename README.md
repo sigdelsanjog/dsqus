@@ -1,5 +1,34 @@
 # 🧩 Dataset Quality Scoring Engine — System Framework (Markdown)
 
+## Local Development Split
+
+The repository now separates responsibilities:
+
+- `dsqus/engine`: core Python package code (no FastAPI).
+- `backend`: FastAPI service that imports and calls the core package.
+- `ui`: browser frontend that uploads files to the backend.
+
+### Run Upload Flow End-to-End
+
+From repository root:
+
+```bash
+python -m venv .venv
+source .venv/bin/activate
+pip install -e .
+pip install -r backend/requirements.txt
+uvicorn backend.app:app --reload
+```
+
+From `ui` in another terminal:
+
+```bash
+npm install
+npm run dev
+```
+
+Then open the Vite URL (typically `http://localhost:5173`) and upload a CSV/XLS/XLSX file.
+
 #️⃣ 1. Overview
 
 The Dataset Quality Scoring Engine (DQS) evaluates the quality of any dataset using automated, model-agnostic metrics.
